@@ -1,31 +1,19 @@
-import axios from "axios";
-import { env } from "../../env.mjs";
-
-const apiKey = process.env.OPENAI_API_KEY;
-console.log('apiKey', apiKey);
+import { api } from "~/utils/api";
 
 export default function BlogPage() {
-    
+  const { data, refetch } = api.openAI.getBudgetSuggestion.useQuery(
+    { text: "How do I become a millionaire?" },
+    { enabled: false }
+  );
 
-    const handleClick = async () => {
-        try {
-            const response = await axios('https://api.openai.com/v1/models', {
-                headers: {
-                    Authorization: "Bearer " + apiKey
-                }
-            });
-            // const data = await response.json();
-            console.log(response.data);
-            return response;
-        } catch (error) {
-            console.error(error);
-        }
-    }
+  const handleClick = () => {
+    refetch();
+  };
 
-    return (
-        <div>
-            <h1>Blog Page</h1>
-            <button onClick={handleClick}>Click me</button>
-        </div>
-    )
+  return (
+    <div>
+      <h1>Blog Page</h1>
+      <button onClick={handleClick}>Click me</button>
+    </div>
+  );
 }

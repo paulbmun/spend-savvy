@@ -8,26 +8,25 @@ import {
   protectedProcedure,
 } from "~/server/api/trpc";
 
+// add correct types (replace `any`)
+
 export const openAIRouter = createTRPCRouter({
   getBudgetSuggestion: publicProcedure
     .input(z.object({ text: z.string()}))
-    .query(async ({ input }) => {
+    .query(async ({ input }): Promise<any> => {
+
+      console.log(env.OPENAI_API_KEY, "KEY")
       try {
-        const response = await axios.post(
-          "https://api.openai.com/v1/chat/completions", 
+        const response = await axios.get(
+            "https://api.openai.com/v1/models", 
           {
             headers: {
-              Authorization: "Bearer "
+              Authorization: `Bearer ${env.OPENAI_API_KEY}`
             },
-            model: "text-davinci-003",
-            prompt: input.text,
-            max_tokens: 5,
-            temperature: 0
           })
-        return response.data.choices[0].text;
+        return response.data.data
       } catch (error) {
         throw error;
       }
     })
 });
-
